@@ -1,18 +1,32 @@
-import {getRollDiceArray} from "./utils.js"
+import {getDicePlaceHolderHtml, getRollDiceArray} from "./utils.js"
+
 
 function Character(data) {
     Object.assign(this, data)
 
+    this.diceArray = getDicePlaceHolderHtml(this.diceCount)
+
     this.getDiceHtml = (diceCount) => {
-        return getRollDiceArray(diceCount).map(die => {
-            return `<div class="dice">${die}</div>`
+        this.currentDiceScore = getRollDiceArray(this.diceCount)
+        return this.diceArray = this.currentDiceScore.map((num) => {
+            return `<div class="dice">${num}</div>`
         }).join("")
     }
 
-    this.getCharacterHtml = () => {
-        const {elementId, name, avatar, health, diceCount} = this
+    this.takeDamage = (attackScoreArray) => {
+        const totalAttackScore = attackScoreArray.reduce((total, diceNum) => {
+            return total + diceNum
+        })
 
-        const diceHtml = this.getDiceHtml(diceCount)
+        this.health -= totalAttackScore
+        if (this.health <= 0) {
+            this.dead = true
+            this.health = 0
+        }
+    }
+
+    this.getCharacterHtml = () => {
+        const {elementId, name, avatar, health, diceCount, diceArray} = this
 
         return (`
             <div class="character-card">
@@ -20,7 +34,7 @@ function Character(data) {
                 <img class="avatar" src=${avatar} />
                 <p class="health">health: <b> ${health} </b></p>
                 <div class="dice-container">
-                    ${diceHtml}
+                    ${diceArray}
                 </div>
             </div>`
         )
