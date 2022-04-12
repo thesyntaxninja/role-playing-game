@@ -1,8 +1,4 @@
-import {getDicePlaceHolderHtml, getRollDiceArray} from "./utils.js"
-
-const getPercentage = (reamainingHealth, maximumHealth) => {
-    return (100 * reamainingHealth) / maximumHealth
-}
+import {getDicePlaceHolderHtml, getPercentage, getRollDiceArray} from "./utils.js"
 
 function Character(data) {
     Object.assign(this, data)
