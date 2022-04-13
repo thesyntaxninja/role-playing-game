@@ -2,6 +2,7 @@ import characterData from "./data.js"
 import Character from "./Character.js"
 
 let monstersArray = ["orc", "demon", "goblin"];
+let isWaiting = false
 
 function getNewMonster() {
     const nextMonsterData = characterData[monstersArray.shift()]
@@ -10,20 +11,26 @@ function getNewMonster() {
 
 
 function attack() {
-    wizard.getDiceHtml()
-    monster.getDiceHtml()
-    wizard.takeDamage(monster.currentDiceScore)
-    monster.takeDamage(wizard.currentDiceScore)
-    render()
+    if (!isWaiting) {
+        wizard.setDiceHtml()
+        monster.setDiceHtml()
+        wizard.takeDamage(monster.currentDiceScore)
+        monster.takeDamage(wizard.currentDiceScore)
+        render()
 
-    if (wizard.dead) {
-        endGame()
-    } else if (monster.dead) {
-        if (monstersArray.length > 0) {
-            monster = getNewMonster()
-            render()
-        } else {
-            endGame()
+        if (wizard.dead) {
+            setTimeout(() => endGame(), 1500)
+        } else if (monster.dead) {
+            if (monstersArray.length > 0) {
+                isWaiting = true
+                monster = getNewMonster()
+                setTimeout(() => {
+                    render()
+                    isWaiting = false
+                }, 1500)
+            } else {
+                setTimeout(() => endGame(), 1500)
+            }
         }
     }
 }
