@@ -16,15 +16,22 @@ function attack() {
     monster.takeDamage(wizard.currentDiceScore)
     render()
 
-    if (wizard.dead || monster.dead) {
+    if (wizard.dead) {
         endGame()
+    } else if (monster.dead) {
+        if (monstersArray.length > 0) {
+            monster = getNewMonster()
+            render()
+        } else {
+            endGame()
+        }
     }
 }
 
 function endGame() {
-    const endMessage = wizard.dead && monster.dead ? `No victors`
+    const endMessage = wizard.dead && monster.dead ? `No victors - all creatures are dead`
         : monster.dead ? `The Wizard Wins!`
-            : `The Orc is victorious`
+            : `The monsters are victorious`
 
     const endEmoji = wizard.dead ? `☠️` : `🔮`
 
